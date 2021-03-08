@@ -5,6 +5,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView
 from django.contrib.auth.models import User
+from myapp.models import UserInfoModel, AdsInfoModel, AdsPhotosModel, FavouriteAdsModel
 
 # Create your views here.
 
@@ -38,5 +39,13 @@ def UserRegistrationView(request):
             return HttpResponse("INVALID CREDENTIALS!")
     else:
         return render(request, 'myapp/UserRegistration.html')
+
+
+def UserProfileView(request, username):
+    user = User.objects.get(username=username)
+    info = UserInfoModel.objects.get(user=user)
+    var_dict = {"user": user, "info": info}
+    return render(request, "myapp/profile.html", context=var_dict)
+
 
 

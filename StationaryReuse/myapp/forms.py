@@ -19,3 +19,7 @@ class UserLoginModelForm(forms.ModelForm):
     class Meta():
         model = User
         fields = ['username','password']
+
+
+class UserInfoModelForm(forms.ModelForm):
+    pass

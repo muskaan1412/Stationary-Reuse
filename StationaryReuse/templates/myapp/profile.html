@@ -17,7 +17,9 @@
                   <div class="card">
                     <div class="card-body">
                       <div class="d-flex flex-column align-items-center text-center">
-                        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
+                        {% if info.profile_pic %}
+                        <img src="{{info.profile_pic.url}}" alt="Admin" class="rounded-circle" width="150">
+                        {% endif %}
                         <div class="mt-3">
                           <p class="text-secondary mb-1">{{user.email}}</p>
                           <!-- <p class="text-muted font-size-sm">College Name</p> -->
@@ -88,6 +90,15 @@
                         </div>
                         <div class="col-sm-9 text-secondary">
                             {{info.college|title}}
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <h6 class="mb-0">Address</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                          {{info.address}}
                         </div>
                       </div>
                     </div>

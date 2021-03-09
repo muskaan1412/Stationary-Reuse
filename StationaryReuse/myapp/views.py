@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from myapp.forms import UserLoginModelForm, UserRegistrationModelForm
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView
 from django.contrib.auth.models import User
 from myapp.models import UserInfoModel, AdsInfoModel, AdsPhotosModel, FavouriteAdsModel
+from django.urls import reverse
 
 # Create your views here.
 
@@ -46,6 +47,37 @@ def UserProfileView(request, username):
     info = UserInfoModel.objects.get(user=user)
     var_dict = {"user": user, "info": info}
     return render(request, "myapp/profile.html", context=var_dict)
+
+
+def UserEditProfileView(request, username):
+    user = User.objects.get(username=username)
+    info = UserInfoModel.objects.get(user=user)
+    if request.method == "POST":
+        name = str(request.POST.get("name"))
+        print(name)
+        if " " in name:
+            user.first_name, user.last_name = name.split(" ")
+            print(user.first_name, user.last_name)
+        else:
+            user.first_name = name
+            user.last_name = ""
+            print(user.first_name)
+        user.email = request.POST.get("email")
+        info.gender = request.POST.get("gender")
+        info.college = request.POST.get("college")
+        info.course = request.POST.get("course")
+        info.description = request.POST.get("description")
+        info.phone_number = request.POST.get("phone_number")
+        info.address = request.POST.get("address")
+        if "profile_pic" in request.FILES:
+            info.profile_pic = request.FILES.get("profile_pic")
+        user.save()
+        info.save()
+        return HttpResponseRedirect(reverse("user:profile", kwargs={"username":username}))
+    else:
+        var_dict = {"user":user, "info":info}
+        return render(request, "myapp/edit_profile.html", context=var_dict)
+
 
 
 

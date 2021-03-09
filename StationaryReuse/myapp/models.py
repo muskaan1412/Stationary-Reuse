@@ -5,12 +5,13 @@ from django.contrib.auth.models import User
 
 class UserInfoModel(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    description = models.CharField(max_length=250)
+    profile_pic = models.ImageField(upload_to="photos/userprofilepics", blank=True)
+    description = models.CharField(max_length=250, blank=True)
     phone_number = models.PositiveSmallIntegerField()
-    college = models.CharField(max_length=40)
-    branch = models.CharField(max_length=40)
+    college = models.CharField(max_length=40, blank=True)
+    branch = models.CharField(max_length=40, blank=True)
     address = models.CharField(max_length=50)
-    gender = models.CharField(max_length=10, default="Male")
+    gender = models.CharField(max_length=10, default="Male", blank=True, null=True)
     
     def __str__(self):
         return self.user.username

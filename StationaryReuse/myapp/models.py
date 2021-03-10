@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Create your models here.
 
@@ -22,16 +23,17 @@ class AdsInfoModel(models.Model):
     purpose = models.CharField(max_length=10)
     category = models.CharField(max_length=10)
     title = models.CharField(max_length=50)
-    price = models.FloatField()
+    price = models.FloatField(blank=True)
     description = models.TextField()
+    posted_date = models.DateField()
     
     def __str__(self):
         return self.title
 
 
 class AdsPhotosModel(models.Model):
-    ads_info = models.ForeignKey(AdsInfoModel, on_delete=models.CASCADE, related_name="photos")
-    photo = models.ImageField(upload_to="photos")
+    pic_parent = models.ForeignKey(AdsInfoModel, on_delete=models.CASCADE, related_name="photos")
+    photo = models.ImageField(upload_to="photos/adpics")
 
 
 class FavouriteAdsModel(models.Model):

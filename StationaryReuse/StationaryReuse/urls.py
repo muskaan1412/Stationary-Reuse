@@ -26,4 +26,7 @@ urlpatterns = [
     path('registration/', views.UserRegistrationView, name="user_registration"),
     path('login/', views.UserLoginView, name="user_login"),
     path('user/', include('myapp.urls')),
+    path('', views.HomePageView, name="home"),
+    path('<str:username>/postad/', views.PostAdView, name="postad"),
+    path('ad-description/<int:pk>/', views.AdDescriptionView, name="ad_description")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

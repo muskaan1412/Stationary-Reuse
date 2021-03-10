@@ -7,6 +7,7 @@ from django.views.generic import CreateView
 from django.contrib.auth.models import User
 from myapp.models import UserInfoModel, AdsInfoModel, AdsPhotosModel, FavouriteAdsModel
 from django.urls import reverse
+from django.utils import timezone
 
 # Create your views here.
 
@@ -54,14 +55,12 @@ def UserEditProfileView(request, username):
     info = UserInfoModel.objects.get(user=user)
     if request.method == "POST":
         name = str(request.POST.get("name"))
-        print(name)
+        #checking whether the user has entered the full name of just the first name and inserting the data accordingly in the table.
         if " " in name:
             user.first_name, user.last_name = name.split(" ")
-            print(user.first_name, user.last_name)
         else:
             user.first_name = name
             user.last_name = ""
-            print(user.first_name)
         user.email = request.POST.get("email")
         info.gender = request.POST.get("gender")
         info.college = request.POST.get("college")
@@ -77,6 +76,41 @@ def UserEditProfileView(request, username):
     else:
         var_dict = {"user":user, "info":info}
         return render(request, "myapp/edit_profile.html", context=var_dict)
+
+
+def HomePageView(request):
+    return render(request, "myapp/home.html", context={})
+
+
+def PostAdView(request, username):
+    user = User.objects.get(username=username)
+    info = UserInfoModel.objects.get(user=user)
+    if request.method == "POST":
+        category = request.POST.get("category")
+        title = request.POST.get("title")
+        description = request.POST.get("description")
+        purpose = request.POST.get("purpose")
+        price = request.POST.get("price")
+        posted_date = timezone.now()
+        # Price in case of donation is a null string so filtering that out.
+        if price=="":
+            price = 0
+        ad = AdsInfoModel.objects.create(title=title, category=category, description=description, purpose=purpose, price=price, user=info, posted_date=posted_date)
+        ad.save()
+        for pic in request.FILES:
+            pic_instance = AdsPhotosModel.objects.create(pic_parent=ad, photo=request.FILES['ad_pic'])
+            pic_instance.save()
+        return HttpResponse("ad created successfully")
+
+    else:
+        return render(request, "myapp/postad.html", context={"user": user, "info": info})
+
+
+def AdDescriptionView(request, pk):
+    ad = AdsInfoModel.objects.get(id=pk)
+    var_dict = {'ad': ad}
+    return render(request, "myapp/ad_description.html", context=var_dict)
+
 
 
 
